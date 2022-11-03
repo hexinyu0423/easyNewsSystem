@@ -1,6 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const arrHtml = [
+const arrHTML = [
     new HtmlWebpackPlugin({
         //设置生成的html主文件的模板地址。
         //在模板文件中插入对新生成的js文件的引用。
@@ -15,4 +15,4 @@ const entry = {
     reg: './src/manage/reg.js',
 }
 
-module.exports = { arrHtml, entry }
+module.exports = { arrHTML, entry }

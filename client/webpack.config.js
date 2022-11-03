@@ -2,7 +2,7 @@ const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const { arrHtml, entry } = require('./webpack.html');
+const { arrHTML, entry } = require('./webpack.html');
 const devServer = require('./webpack.devServer');
 
 module.exports = {
@@ -83,7 +83,7 @@ module.exports = {
         minimize: true
     },
     plugins: [
-        ...arrHtml,
+        ...arrHTML,
         new MiniCssExtractPlugin({
             filename: 'css/main_[id].css'
         })
