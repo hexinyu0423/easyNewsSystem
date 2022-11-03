@@ -1,19 +1,13 @@
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const { arrHtml, entry } = require('./webpack.html');
+const devServer = require('./webpack.devServer');
 
 module.exports = {
     mode: 'development',
-
-    entry: {
-        login: './src/js/login.js',
-        reg: './src/js/reg.js',
-        index: './src/js/index.js',
-        modify: './src/js/modify.js'
-    },
-
+    entry,
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: 'js/[id]_bundle.js',
@@ -89,78 +83,11 @@ module.exports = {
         minimize: true
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            //设置生成的html主文件的模板地址。
-            //在模板文件中插入对新生成的js文件的引用。
-            template: './src/login.html',
-            //生成的文件名，默认是index.html
-            filename: 'login.html',
-            chunks: ['login']
-
-        }),
-
-        new HtmlWebpackPlugin({
-            //设置生成的html主文件的模板地址。
-            //在模板文件中插入对新生成的js文件的引用。
-            template: './src/reg.html',
-            //生成的文件名，默认是index.html
-            filename: 'reg.html',
-            chunks: ['reg']
-
-        }), new HtmlWebpackPlugin({
-            //设置生成的html主文件的模板地址。
-            //在模板文件中插入对新生成的js文件的引用。
-            template: './src/index.html',
-            //生成的文件名，默认是index.html
-            filename: 'index.html',
-            chunks: ['index']
-
-        }),
-        new HtmlWebpackPlugin({
-            //设置生成的html主文件的模板地址。
-            //在模板文件中插入对新生成的js文件的引用。
-            template: './src/modify.html',
-            //生成的文件名，默认是index.html
-            filename: 'modify.html',
-            chunks: ['modify']
-
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: './src/css',
-                    to: 'css'
-                }
-            ]
-        }),
+        ...arrHtml,
         new MiniCssExtractPlugin({
             filename: 'css/main_[id].css'
         })
     ],
     target: 'web',
-    devServer: {
-        //端口号
-        port: 8080,
-        //开启热更新
-        hot: 'only',
-        //打开服务器时自动开启浏览器访问
-        open: true,
-        //监控变化的文件的，被监控的文件只要发生变化，就会重新编译，自动刷新浏览器。
-        watchFiles: ['./src/index.html', './src/login.html', './src/reg.html', './src/modify.html'],
-        static: {
-            //设置express服务器的根目录。
-            directory: path.join(__dirname, 'dist'),
-        },
-        proxy: {
-            //请求地址中包含/api的就会被拦截，例如：'/api/getXXX'
-            '/api': {
-                // 真实的请求会被转发到 'http://172.16.5.30/api/getXXX'
-                target: 'http://127.0.0.1',
-                //如果真实服务器地址是''http://172.16.5.30/abc/getXXX'
-                // pathRewrite: { "^/api": "/api" },
-                //发送请求头中host会设置成target
-                changeOrigin: true
-            }
-        }
-    }
+    devServer
 }
