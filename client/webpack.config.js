@@ -1,9 +1,12 @@
 const path = require('path')
+
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { arrHTML, entry } = require('./webpack.html');
 const devServer = require('./webpack.devServer');
+
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -78,9 +81,13 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            new CssMinimizerPlugin()
+            new CssMinimizerPlugin(),
+            new TerserPlugin()
         ],
-        minimize: true
+        minimize: true,
+        splitChunks: {
+            chunks: 'all'
+        }
     },
     plugins: [
         ...arrHTML,
@@ -88,6 +95,5 @@ module.exports = {
             filename: 'css/main_[id].css'
         })
     ],
-    target: 'web',
     devServer
 }

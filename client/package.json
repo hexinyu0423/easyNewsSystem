@@ -33,5 +33,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "dependencies": {
+    "terser-webpack-plugin": "^5.3.6"
+  }
 }

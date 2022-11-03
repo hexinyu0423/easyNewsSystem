@@ -1,39 +1,59 @@
 var express = require('express');
 var router = express.Router();
 
+require('express-async-errors');
 const query = require('../utils/mySql');
 const jiami = require('../utils/sha1');
 const getToken = require('../utils/getToken');
+const $ = fn => (...args) => fn(...args).catch(args[2]);
+const { expressjwt } = require('express-jwt');
 
 // 管理员
-router.post('/reg', async function (req, res, next) {
-  try {
-    const { uid, pwd } = req.body;
-    const users = await query('select * from admins where username=?', [uid]);
-    if (users.length > 0) {
-      res.json({
-        flag: false,
-        msg: '用户名已存在'
-      })
-    } else {
-      await query('insert into admins (username,password,createdAt,updatedAt) values (?,?,now(),now())', [uid, jiami(pwd)])
-      res.json({
-        flag: true,
-        msg: '注册成功'
-      })
-    }
-  } catch (e) {
-    next(e)
+router.post('/reg', $(async function (req, res, next) {
+  const { uid, pwd } = req.body;
+  const users = await query('select * from admins where username=?', [uid]);
+  if (users.length > 0) {
+    res.json({
+      flag: false,
+      msg: '用户名已存在'
+    })
+  } else {
+    await query('insert into admins (username,password,createdAt,updatedAt) values (?,?,now(),now())', [uid, jiami(pwd)])
+    res.json({
+      flag: true,
+      msg: '注册成功'
+    })
   }
+}));
 
-});
+router.post('/login', $(async function (req, res, next) {
+  const { uid, pwd } = req.body;
+  const users = await query('select * from admins where username=? and password=?', [uid, jiami(pwd)])
+  if (users.length > 0) {
+    res.json({
+      flag: true,
+      msg: '登陆成功',
+      token: getToken({ id: users[0].id }, '1h')
+    })
+  } else {
+    res.json({
+      flag: false,
+      msg: '用户名或密码错误'
+    })
+  }
+}));
 
-router.post('/login', function (req, res, next) {
-  res.json({ a: 1 })
-});
+// router.all('*',);
 
-router.post('/modifyPwd', function (req, res, next) {
-  res.json({ a: 1 })
+router.post('/modifyPwd', expressjwt({ secret: 'hexinyu', algorithms: ['HS256'] }), async function (req, res, next) {
+  const { newPwd } = req.body;
+  const { id } = req.auth;
+  console.log(id, newPwd);
+  await query('update admins set password=? where id=?', [jiami(newPwd), id]);
+  res.json({
+    flag: true,
+    msg: '修改成功'
+  })
 });
 
 // 新闻分类
