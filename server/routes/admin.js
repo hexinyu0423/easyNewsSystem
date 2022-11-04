@@ -79,11 +79,20 @@ router.post('/addNewsClass', async function (req, res, next) {
 
 router.post('/modifyClass', async function (req, res, next) {
   const { className, classExplain, id } = req.body;
-  await query('update classnews set className=?,updatedAt=now(),classExplain=? where id=?', [className, classExplain, id])
-  res.json({
-    flag: true,
-    msg: '修改成功'
-  })
+  const classNames = await query('select * from classnews where className=? and id<>?', [className, id])
+  if (classNames.length > 0) {
+    res.json({
+      flag: false,
+      msg: '修改不成功'
+    })
+  } else {
+    await query('update classnews set className=?,updatedAt=now(),classExplain=? where id=?', [className, classExplain, id])
+    res.json({
+      flag: true,
+      msg: '修改成功'
+    })
+  }
+
 });
 
 router.post('/deleteClass', async function (req, res, next) {
@@ -96,8 +105,17 @@ router.post('/deleteClass', async function (req, res, next) {
 });
 
 // 新闻
-router.post('/addNews', function (req, res, next) {
-  res.json({ a: 1 })
+router.post('/addNews', async function (req, res, next) {
+  const { classId, title, content } = req.body;
+  const authId = req.auth.id;
+  await query(
+    'insert into news (title,content,authId,classId,hot,createdAt,updatedAt) values (?,?,?,?,0,now(),now())',
+    [title, content, authId, classId]
+  );
+  res.json({
+    flag: true,
+    msg: '添加成功'
+  })
 });
 
 router.post('/modifyNews', function (req, res, next) {

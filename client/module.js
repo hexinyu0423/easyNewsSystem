@@ -4,4 +4,5 @@ module.exports = [
     'index',
     'modifyPwd',
     'newsClass',
+    'news'
 ]

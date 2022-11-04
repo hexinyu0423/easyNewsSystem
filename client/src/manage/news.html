@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="control">
+        <form>
+            分类：
+            <select name="newsClass"></select>
+            标题
+            <input type="text" name="title">
+            内容：
+            <input type="text" name="content">
+
+            <button type="submit" name="btn">新增</button>
+            <button type="button" name="btn2" style="display: none;">取消修改</button>
+        </form>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>新闻id</th>
+                    <th>标题</th>
+                    <th>内容</th>
+                    <th>分类</th>
+                    <th>作者</th>
+                    <th>更新时间</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="dataList">
+
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
