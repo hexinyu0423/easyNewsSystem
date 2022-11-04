@@ -1,15 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const arr = require('./module');
 
-const arrHTML = []
+const arrHTML = [];
 
-const entry = {
-    reg: './src/manage/reg.js',
-    login: './src/manage/login.js',
-    index: './src/manage/index.js',
-    modifyPwd: './src/manage/modifyPwd.js',
-    newsClass: './src/manage/newsClass.js',
-}
+const entry = {};
 
 arr.forEach((item) => {
     arrHTML.push(

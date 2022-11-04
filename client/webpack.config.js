@@ -79,15 +79,14 @@ module.exports = {
             }
         ]
     },
+    // 如果没有这个设置项，则以生产模式打包时，会自动使用内置的优化方案来打包
+    // 如果设置了这个选项，则webpack打包时会自动忽略默认选项
     optimization: {
         minimizer: [
             new CssMinimizerPlugin(),
             new TerserPlugin()
         ],
         minimize: true,
-        splitChunks: {
-            chunks: 'all'
-        }
     },
     plugins: [
         ...arrHTML,

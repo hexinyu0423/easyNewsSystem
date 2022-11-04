@@ -4,9 +4,9 @@ var router = express.Router();
 require('express-async-errors');
 const query = require('../utils/mySql');
 const jiami = require('../utils/sha1');
-const getToken = require('../utils/getToken');
+const { getToken, verifyToken } = require('../utils/token');
 const $ = fn => (...args) => fn(...args).catch(args[2]);
-const { expressjwt } = require('express-jwt');
+// const { expressjwt } = require('express-jwt');
 
 // 管理员
 router.post('/reg', $(async function (req, res, next) {
@@ -43,9 +43,9 @@ router.post('/login', $(async function (req, res, next) {
   }
 }));
 
-// router.all('*',);
+router.all('*', verifyToken());
 
-router.post('/modifyPwd', expressjwt({ secret: 'hexinyu', algorithms: ['HS256'] }), async function (req, res, next) {
+router.post('/modifyPwd', async function (req, res, next) {
   const { newPwd } = req.body;
   const { id } = req.auth;
   console.log(id, newPwd);
@@ -77,11 +77,22 @@ router.post('/addNewsClass', async function (req, res, next) {
   }
 });
 
-router.post('/modifyClass', function (req, res, next) {
-  res.json({ a: 1 })
+router.post('/modifyClass', async function (req, res, next) {
+  const { className, classExplain, id } = req.body;
+  await query('update classnews set className=?,updatedAt=now(),classExplain=? where id=?', [className, classExplain, id])
+  res.json({
+    flag: true,
+    msg: '修改成功'
+  })
 });
-router.post('/deleteClass', function (req, res, next) {
-  res.json({ a: 1 })
+
+router.post('/deleteClass', async function (req, res, next) {
+  const { classId } = req.body;
+  await query('delete from classnews where id=?', [classId]);
+  res.json({
+    flag: true,
+    msg: '删除成功'
+  })
 });
 
 // 新闻
