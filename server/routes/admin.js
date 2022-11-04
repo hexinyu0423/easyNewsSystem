@@ -91,7 +91,7 @@ router.post('/deleteClass', async function (req, res, next) {
   await query('delete from classnews where id=?', [classId]);
   res.json({
     flag: true,
-    msg: '删除成功'
+    msg: '成功删除'
   })
 });
 
