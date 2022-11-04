@@ -8,6 +8,12 @@ export default function (method, url, data, sync = true) {
                 if (xhr.status == 200) {
                     resolve(JSON.parse(xhr.response));
                 } else {
+                    if (xhr.status == 401) {
+                        alert('您未登录或登录超时\n请重新登录')
+                        top.location.replace('../manage/login.html')
+                    } else {
+                        alert('服务器忙，请稍后再试')
+                    }
                     reject({
                         code: xhr.status
                     })

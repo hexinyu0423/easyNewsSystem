@@ -57,8 +57,24 @@ router.post('/modifyPwd', expressjwt({ secret: 'hexinyu', algorithms: ['HS256'] 
 });
 
 // 新闻分类
-router.post('/addNewsClass', function (req, res, next) {
-  res.json({ a: 1 })
+router.post('/addNewsClass', async function (req, res, next) {
+  const { className, classExplain } = req.body;
+  const classNames = await query('select * from classnews where className=?', [className])
+  if (classNames.length > 0) {
+    res.json({
+      flag: false,
+      msg: '分类名称已存在'
+    })
+  } else {
+    await query(
+      'insert into classnews (className,classExplain,createdAt,updatedAt) values (?,?,now(),now())',
+      [className, classExplain]
+    )
+    res.json({
+      flag: true,
+      msg: '分类新增成功'
+    })
+  }
 });
 
 router.post('/modifyClass', function (req, res, next) {
